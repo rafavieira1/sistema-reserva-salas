@@ -1,0 +1,15 @@
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\bin\Debug\net8.0\MonolitoBackend.Infrastructure.deps.json
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\bin\Debug\net8.0\MonolitoBackend.Infrastructure.dll
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\bin\Debug\net8.0\MonolitoBackend.Infrastructure.pdb
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\bin\Debug\net8.0\MonolitoBackend.Core.dll
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\bin\Debug\net8.0\MonolitoBackend.Core.pdb
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.csproj.AssemblyReference.cache
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.AssemblyInfoInputs.cache
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.AssemblyInfo.cs
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.csproj.CoreCompileInputs.cache
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\Monolito.54C886CD.Up2Date
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.dll
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\refint\MonolitoBackend.Infrastructure.dll
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\MonolitoBackend.Infrastructure.pdb
+E:\Projetos\MonolitoBackend\MonolitoBackend.Infrastructure\obj\Debug\net8.0\ref\MonolitoBackend.Infrastructure.dll
