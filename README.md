@@ -91,7 +91,7 @@ Você pode testar a API via Swagger UI ou Insomnia/Postman.
 ```json
 {
   "roomId": 1,
-  "reservedBy": "João Silva",
+  "reservedBy": "Rafael Vieira",
   "startTime": "2024-04-29T09:00:00Z",
   "endTime": "2024-04-29T10:00:00Z"
 }
