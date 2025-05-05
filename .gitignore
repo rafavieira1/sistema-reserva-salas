@@ -104,3 +104,31 @@ appsettings.Staging.json
 # OS specific files
 .DS_Store
 Thumbs.db
+
+# Entity Framework Core
+**/Migrations/*.Designer.cs
+**/Migrations/*.Designer.resx
+**/Migrations/*.Snapshot.cs
+
+# PostgreSQL
+*.dump
+*.sql
+*.bak
+*.backup
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Secrets
+secrets.json
+*.pfx
+*.key
+*.pem
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.*~
+~*.*

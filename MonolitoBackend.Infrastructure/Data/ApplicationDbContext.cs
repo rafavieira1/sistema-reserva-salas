@@ -13,6 +13,7 @@ namespace MonolitoBackend.Infrastructure.Data
 
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,6 +24,14 @@ namespace MonolitoBackend.Infrastructure.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Room>()
+                .HasIndex(r => r.Name)
+                .IsUnique();
         }
     }
 }

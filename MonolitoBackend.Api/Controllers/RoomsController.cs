@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MonolitoBackend.Core.Entities;
 using MonolitoBackend.Core.Services;
@@ -8,6 +9,7 @@ namespace MonolitoBackend.Api.Controllers
 {
     [ApiController]
     [Route("rooms")]
+    [Authorize]
     public class RoomsController : ControllerBase
     {
         private readonly IRoomService _roomService;
