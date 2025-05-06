@@ -113,26 +113,114 @@ Authorization: Bearer seu_token_aqui
 
 Você pode testar a API via Swagger UI ou Insomnia/Postman.
 
-### Exemplos de payload:
+### Testando com Insomnia
 
-#### Criar Sala (`POST /rooms`)
-```json
-{
-  "name": "Sala de Reunião",
-  "capacity": 15,
-  "hasProjector": true
-}
-```
+1. **Instalação do Insomnia**
+   - Baixe e instale o Insomnia em: https://insomnia.rest/download
+   - Crie uma nova coleção chamada "Sistema de Reservas de Salas"
 
-#### Criar Reserva (`POST /reservations`)
-```json
-{
-  "roomId": 1,
-  "reservedBy": "Rafael Vieira",
-  "startTime": "2024-04-29T09:00:00Z",
-  "endTime": "2024-04-29T10:00:00Z"
-}
-```
+2. **Configuração do Ambiente**
+   - Crie um novo ambiente no Insomnia
+   - Adicione as seguintes variáveis:
+     ```json
+     {
+       "baseUrl": "http://localhost:5027",
+       "token": ""
+     }
+     ```
+
+3. **Autenticação**
+   - Crie uma pasta "Auth" na sua coleção
+   - Adicione as seguintes requisições:
+
+   **Registro de Usuário**
+   ```
+   POST {{baseUrl}}/api/auth/register
+   Content-Type: application/json
+
+   {
+     "name": "Usuário Teste",
+     "email": "teste@exemplo.com",
+     "password": "senha123",
+     "role": "User"
+   }
+   ```
+
+   **Login**
+   ```
+   POST {{baseUrl}}/api/auth/login
+   Content-Type: application/json
+
+   {
+     "email": "teste@exemplo.com",
+     "password": "senha123"
+   }
+   ```
+   - Após o login, copie o token retornado e atualize a variável `token` no ambiente
+
+4. **Requisições de Salas**
+   - Crie uma pasta "Salas" na sua coleção
+   - Adicione as seguintes requisições:
+
+   **Listar Salas**
+   ```
+   GET {{baseUrl}}/api/rooms
+   Authorization: Bearer {{token}}
+   ```
+
+   **Criar Sala**
+   ```
+   POST {{baseUrl}}/api/rooms
+   Authorization: Bearer {{token}}
+   Content-Type: application/json
+
+   {
+     "name": "Sala de Reunião",
+     "capacity": 15,
+     "hasProjector": true
+   }
+   ```
+
+5. **Requisições de Reservas**
+   - Crie uma pasta "Reservas" na sua coleção
+   - Adicione as seguintes requisições:
+
+   **Listar Reservas**
+   ```
+   GET {{baseUrl}}/api/reservations
+   Authorization: Bearer {{token}}
+   ```
+
+   **Criar Reserva**
+   ```
+   POST {{baseUrl}}/api/reservations
+   Authorization: Bearer {{token}}
+   Content-Type: application/json
+
+   {
+     "roomId": 1,
+     "reservedBy": "Rafael Vieira",
+     "startTime": "2024-04-29T09:00:00Z",
+     "endTime": "2024-04-29T10:00:00Z"
+   }
+   ```
+
+### Fluxo de Teste Recomendado
+
+1. Registre um novo usuário usando a requisição de registro
+2. Faça login com as credenciais criadas
+3. Copie o token JWT retornado e atualize a variável `token` no ambiente
+4. Crie uma sala usando a requisição de criação de sala
+5. Liste as salas para confirmar a criação
+6. Crie uma reserva para a sala criada
+7. Liste as reservas para confirmar a criação
+
+### Dicas para Testes
+
+- Use o recurso de "Environments" do Insomnia para alternar entre ambientes (desenvolvimento, produção, etc.)
+- Utilize o recurso de "Request Chaining" para automatizar fluxos de teste
+- Mantenha os tokens JWT atualizados no ambiente
+- Use o recurso de "Response History" para comparar respostas entre requisições
 
 ---
 
