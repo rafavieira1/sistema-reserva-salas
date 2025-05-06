@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MonolitoBackend.Core.DTOs;
 using MonolitoBackend.Core.Interfaces;
+using MonolitoBackend.Core.Entities;
 
 namespace MonolitoBackend.Api.Controllers;
 
@@ -74,12 +76,46 @@ public class AuthController : ControllerBase
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { 
+                    message = "Dados inválidos", 
+                    errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                });
+            }
+
             var response = await _authService.RegisterAsync(registrationDto);
             return Ok(response);
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(new { 
+                message = ex.Message,
+                details = "Por favor, verifique os dados e tente novamente."
+            });
         }
+    }
+
+    /// <summary>
+    /// Lista todos os usuários cadastrados
+    /// </summary>
+    /// <returns>Lista de usuários</returns>
+    /// <remarks>
+    /// Requer autenticação e permissão de administrador
+    /// </remarks>
+    /// <response code="200">Retorna a lista de usuários</response>
+    /// <response code="401">Não autorizado</response>
+    /// <response code="403">Acesso negado</response>
+    [HttpGet("users")]
+    [Authorize(Roles = "Admin")]
+    [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+    {
+        var users = await _authService.GetAllUsersAsync();
+        return Ok(users);
     }
 } 
