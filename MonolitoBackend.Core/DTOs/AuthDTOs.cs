@@ -2,39 +2,38 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MonolitoBackend.Core.DTOs;
 
-public class LoginDto
+public class RegisterDTO
 {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
+    [Required(ErrorMessage = "O nome é obrigatório")]
+    [StringLength(100, ErrorMessage = "O nome deve ter no máximo 100 caracteres")]
+    public string Name { get; set; } = string.Empty;
 
-    [Required]
-    public string Password { get; set; }
+    [Required(ErrorMessage = "O email é obrigatório")]
+    [EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "A senha é obrigatória")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 100 caracteres")]
+    public string Password { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "O papel do usuário é obrigatório")]
+    public string Role { get; set; } = "User";
 }
 
-public class UserRegistrationDto
+public class LoginDTO
 {
-    [Required]
-    [StringLength(100)]
-    public string Name { get; set; }
+    [Required(ErrorMessage = "O email é obrigatório")]
+    [EmailAddress(ErrorMessage = "Email inválido")]
+    public string Email { get; set; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    [StringLength(100)]
-    public string Email { get; set; }
-
-    [Required]
-    [StringLength(100, MinimumLength = 6)]
-    public string Password { get; set; }
-
-    [Required]
-    public string Role { get; set; }
+    [Required(ErrorMessage = "A senha é obrigatória")]
+    public string Password { get; set; } = string.Empty;
 }
 
-public class AuthResponseDto
+public class AuthResponseDTO
 {
-    public string Token { get; set; }
-    public string Email { get; set; }
-    public string Name { get; set; }
-    public string Role { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
 } 

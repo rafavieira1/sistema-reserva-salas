@@ -16,7 +16,7 @@ namespace MonolitoBackend.Infrastructure.Repositories
         public async Task<IEnumerable<Room>> GetAllAsync()
             => await _context.Rooms.Include(r => r.Reservations).ToListAsync();
 
-        public async Task<Room> GetByIdAsync(int id)
+        public async Task<Room?> GetByIdAsync(int id)
             => await _context.Rooms.Include(r => r.Reservations).FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<Room> AddAsync(Room room)
@@ -34,7 +34,7 @@ namespace MonolitoBackend.Infrastructure.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var room = await _context.Rooms.FindAsync(id);
+            var room = await GetByIdAsync(id);
             if (room != null)
             {
                 _context.Rooms.Remove(room);

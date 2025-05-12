@@ -1,255 +1,187 @@
-# Sistema de Reservas de Salas
+# Sistema de Reserva de Salas
 
-API RESTful desenvolvida em .NET 8 com ASP.NET Core para gerenciamento de salas e reservas, utilizando Entity Framework Core com persistência em PostgreSQL. A aplicação é documentada com Swagger e possui arquitetura em camadas para organização e escalabilidade.
+Sistema de gerenciamento de reservas de salas com autenticação JWT, tratamento de exceções centralizado e arquitetura em camadas.
 
-## ⚙️ Tecnologias Utilizadas
+## 🚀 Tecnologias
 
-- ASP.NET Core (.NET 8)
+- .NET 8.0
+- ASP.NET Core Web API
 - Entity Framework Core
 - PostgreSQL
-- Docker (para banco de dados)
-- Swagger (Swashbuckle)
-- JWT (JSON Web Tokens)
-- BCrypt para hash de senhas
+- JWT Authentication
+- Docker
+- Swagger/OpenAPI
 - Insomnia (testes manuais)
-- Git + GitHub
+## 📋 Pré-requisitos
 
----
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [Docker](https://www.docker.com/products/docker-desktop)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [PostgreSQL](https://www.postgresql.org/download/) (opcional, se não quiser usar Docker)
 
-## 📁 Estrutura do Projeto
+## 🔧 Configuração do Ambiente
 
-```
-MonolitoBackend/
-├── MonolitoBackend.Api             # Camada da API (Controllers, Program.cs, Swagger)
-├── MonolitoBackend.Core            # Entidades, interfaces e contratos
-├── MonolitoBackend.Infrastructure  # DbContext, repositórios e serviços
-├── docker-compose.yml              # Subida do PostgreSQL com Docker
-```
-
----
-
-## 🔧 Como Rodar o Projeto Localmente
-
-### 1. Clone o repositório
-
+1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/seu-usuario/sistema-reserva-salas.git
+cd sistema-reserva-salas
 ```
 
-### 2. Suba o banco de dados com Docker
+2. Configure o banco de dados PostgreSQL:
+   - Se estiver usando Docker (recomendado):
+   ```bash
+   docker-compose up -d
+   ```
+   - Se estiver usando PostgreSQL localmente, atualize a string de conexão em `MonolitoBackend.Api/appsettings.json`
 
+3. Configure as variáveis de ambiente:
+   - Copie o arquivo `appsettings.json` para `appsettings.Development.json`
+   - Atualize as configurações conforme necessário:
+     - ConnectionStrings
+     - JwtSettings
+
+## 🛠️ Instalação
+
+1. Restaure as dependências:
 ```bash
-docker-compose up -d
+dotnet restore
 ```
 
-Certifique-se de que o PostgreSQL está rodando na porta 5432.
-
-### 3. Configure a conexão e JWT no `appsettings.json`
-
-No projeto `MonolitoBackend.Api`, edite o arquivo `appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=salasdb;Username=usuario;Password=senha"
-  },
-  "JwtSettings": {
-    "Secret": "sua_chave_secreta_muito_segura_com_pelo_menos_32_caracteres",
-    "ExpirationInHours": 24
-  }
-}
-```
-
-### 4. Rode as migrations
-
+2. Aplique as migrações do banco de dados:
 ```bash
-dotnet ef database update --project MonolitoBackend.Infrastructure --startup-project MonolitoBackend.Api
+cd MonolitoBackend.Api
+dotnet ef database update
 ```
 
-### 5. Rode o projeto
+3. Compile o projeto:
+```bash
+dotnet build
+```
 
+## 🚀 Executando a Aplicação
+
+1. Inicie a API:
 ```bash
 cd MonolitoBackend.Api
 dotnet run
 ```
 
-A API estará disponível em:  
-`http://localhost:5027/swagger`
+2. Acesse a documentação Swagger:
+```
+http://localhost:5027/swagger
+```
 
----
+## 📁 Estrutura do Projeto
 
-## 🔐 Autenticação e Autorização
+```
+sistema-reserva-salas/
+├── MonolitoBackend.Api/           # Camada de API
+├── MonolitoBackend.Core/          # Camada de domínio
+└── MonolitoBackend.Infrastructure/# Camada de infraestrutura
+```
 
-A API utiliza JWT (JSON Web Tokens) para autenticação e autorização. Todos os endpoints (exceto login e registro) requerem um token JWT válido.
+### Camadas
 
-### 1. Registro de Usuário (`POST /api/auth/register`)
-```json
+- **API**: Controllers, configuração da aplicação
+- **Core**: Entidades, interfaces, DTOs
+- **Infrastructure**: Implementações, repositórios, serviços
+
+## 🔐 Autenticação
+
+A API usa autenticação JWT. Para obter um token:
+
+1. Registre um usuário:
+```http
+POST /api/auth/register
 {
-  "name": "Usuário Teste",
-  "email": "teste@exemplo.com",
-  "password": "senha123",
-  "role": "User"
+    "name": "Usuário Teste",
+    "email": "teste@email.com",
+    "password": "Senha123!"
 }
 ```
 
-### 2. Login (`POST /api/auth/login`)
-```json
+2. Faça login:
+```http
+POST /api/auth/login
 {
-  "email": "teste@exemplo.com",
-  "password": "senha123"
+    "email": "teste@email.com",
+    "password": "Senha123!"
 }
 ```
 
-### 3. Usando o Token
-Após o login, você receberá um token JWT. Use-o no header das requisições:
+3. Use o token retornado no header:
 ```
-Authorization: Bearer seu_token_aqui
+Authorization: Bearer {seu_token}
 ```
 
----
+## 🧪 Testando a API
 
-## 🧪 Testes de API
+Endpoints de teste disponíveis:
 
-Você pode testar a API via Swagger UI ou Insomnia/Postman.
+- `GET /api/test/public` - Endpoint público
+- `GET /api/test/private` - Endpoint que requer autenticação
+- `GET /api/test/test-exception` - Teste de exceção não autorizada
+- `GET /api/test/test-validation` - Teste de exceção de validação
+- `GET /api/test/test-not-found` - Teste de recurso não encontrado
+- `GET /api/test/test-invalid-operation` - Teste de operação inválida
+- `GET /api/test/test-not-supported` - Teste de operação não suportada
+- `GET /api/test/test-error` - Teste de erro interno
 
-### Testando com Insomnia
+## 🔍 Tratamento de Exceções
 
-1. **Instalação do Insomnia**
-   - Baixe e instale o Insomnia em: https://insomnia.rest/download
-   - Crie uma nova coleção chamada "Sistema de Reservas de Salas"
+O sistema possui um middleware centralizado para tratamento de exceções que retorna respostas padronizadas:
 
-2. **Configuração do Ambiente**
-   - Crie um novo ambiente no Insomnia
-   - Adicione as seguintes variáveis:
-     ```json
-     {
-       "baseUrl": "http://localhost:5027",
-       "token": ""
-     }
-     ```
+```json
+{
+    "status": 400,
+    "error": "Mensagem de erro",
+    "timestamp": "2024-03-14T12:00:00Z",
+    "errorId": "guid-único",
+    "path": "/api/test/test-validation",
+    "method": "GET"
+}
+```
 
-3. **Autenticação**
-   - Crie uma pasta "Auth" na sua coleção
-   - Adicione as seguintes requisições:
+## 📝 Logs
 
-   **Registro de Usuário**
-   ```
-   POST {{baseUrl}}/api/auth/register
-   Content-Type: application/json
+Os logs são gerados automaticamente para todas as exceções, incluindo:
+- ID do erro
+- Caminho da requisição
+- Método HTTP
+- Mensagem de erro
+- Stack trace
 
-   {
-     "name": "Usuário Teste",
-     "email": "teste@exemplo.com",
-     "password": "senha123",
-     "role": "User"
-   }
-   ```
+## 🔄 Migrações
 
-   **Login**
-   ```
-   POST {{baseUrl}}/api/auth/login
-   Content-Type: application/json
+Para criar uma nova migração:
+```bash
+cd MonolitoBackend.Api
+dotnet ef migrations add NomeDaMigracao --project ../MonolitoBackend.Infrastructure
+```
 
-   {
-     "email": "teste@exemplo.com",
-     "password": "senha123"
-   }
-   ```
-   - Após o login, copie o token retornado e atualize a variável `token` no ambiente
+Para aplicar migrações:
+```bash
+dotnet ef database update
+```
 
-4. **Requisições de Salas**
-   - Crie uma pasta "Salas" na sua coleção
-   - Adicione as seguintes requisições:
+## 🐛 Solução de Problemas
 
-   **Listar Salas**
-   ```
-   GET {{baseUrl}}/api/rooms
-   Authorization: Bearer {{token}}
-   ```
+1. **Erro de conexão com o banco de dados**:
+   - Verifique se o PostgreSQL está rodando
+   - Confirme a string de conexão em `appsettings.json`
+   - Se usando Docker, verifique se o container está ativo
 
-   **Criar Sala**
-   ```
-   POST {{baseUrl}}/api/rooms
-   Authorization: Bearer {{token}}
-   Content-Type: application/json
+2. **Erro de compilação**:
+   - Execute `dotnet clean`
+   - Delete as pastas `bin` e `obj`
+   - Execute `dotnet restore`
+   - Execute `dotnet build`
 
-   {
-     "name": "Sala de Reunião",
-     "capacity": 15,
-     "hasProjector": true
-   }
-   ```
+3. **Erro de migração**:
+   - Verifique se o banco de dados existe
+   - Confirme as permissões do usuário
+   - Tente remover e recriar as migrações
 
-5. **Requisições de Reservas**
-   - Crie uma pasta "Reservas" na sua coleção
-   - Adicione as seguintes requisições:
+## 📄 Licença
 
-   **Listar Reservas**
-   ```
-   GET {{baseUrl}}/api/reservations
-   Authorization: Bearer {{token}}
-   ```
-
-   **Criar Reserva**
-   ```
-   POST {{baseUrl}}/api/reservations
-   Authorization: Bearer {{token}}
-   Content-Type: application/json
-
-   {
-     "roomId": 1,
-     "reservedBy": "Rafael Vieira",
-     "startTime": "2024-04-29T09:00:00Z",
-     "endTime": "2024-04-29T10:00:00Z"
-   }
-   ```
-
-### Fluxo de Teste Recomendado
-
-1. Registre um novo usuário usando a requisição de registro
-2. Faça login com as credenciais criadas
-3. Copie o token JWT retornado e atualize a variável `token` no ambiente
-4. Crie uma sala usando a requisição de criação de sala
-5. Liste as salas para confirmar a criação
-6. Crie uma reserva para a sala criada
-7. Liste as reservas para confirmar a criação
-
-### Dicas para Testes
-
-- Use o recurso de "Environments" do Insomnia para alternar entre ambientes (desenvolvimento, produção, etc.)
-- Utilize o recurso de "Request Chaining" para automatizar fluxos de teste
-- Mantenha os tokens JWT atualizados no ambiente
-- Use o recurso de "Response History" para comparar respostas entre requisições
-
----
-
-## ✅ Funcionalidades Implementadas
-
-- [x] Cadastro, listagem, atualização e remoção de salas
-- [x] Cadastro, listagem, atualização e remoção de reservas
-- [x] Listar reservas por sala
-- [x] Validação de dados via `[ApiController]`
-- [x] Integração com banco PostgreSQL via Docker
-- [x] Documentação automática com Swagger
-- [x] Autenticação com JWT
-- [x] Hash de senhas com BCrypt
-- [x] Autorização baseada em roles
-- [x] Proteção de endpoints com `[Authorize]`
-
----
-
-## 🔒 Segurança
-
-- Senhas são armazenadas com hash usando BCrypt
-- Tokens JWT com expiração configurável
-- Endpoints protegidos com autenticação
-- Suporte a diferentes níveis de acesso (roles)
-- Validação de dados de entrada
-- Proteção contra SQL Injection via EF Core
-
----
-
-## ✍️ Autor
-
-Desenvolvido por **Rafael Silva Vieira** como parte de projeto acadêmico.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.

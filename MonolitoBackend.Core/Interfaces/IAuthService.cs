@@ -5,8 +5,8 @@ namespace MonolitoBackend.Core.Interfaces;
 
 public interface IAuthService
 {
-    Task<AuthResponseDto> LoginAsync(LoginDto loginDto);
-    Task<AuthResponseDto> RegisterAsync(UserRegistrationDto registrationDto);
+    Task<AuthResponseDTO> LoginAsync(LoginDTO loginDto);
+    Task<AuthResponseDTO> RegisterAsync(RegisterDTO registerDto);
     string GenerateJwtToken(User user);
     Task<IEnumerable<User>> GetAllUsersAsync();
 } 

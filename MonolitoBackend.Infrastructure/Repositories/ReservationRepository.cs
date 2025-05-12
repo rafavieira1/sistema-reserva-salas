@@ -14,10 +14,10 @@ namespace MonolitoBackend.Infrastructure.Repositories
         public ReservationRepository(ApplicationDbContext context) => _context = context;
 
         public async Task<IEnumerable<Reservation>> GetAllAsync()
-            => await _context.Reservations.Include(r => r.Room).ToListAsync();
+            => await _context.Reservations.Include(r => r.Room).Include(r => r.ReservedBy).ToListAsync();
 
-        public async Task<Reservation> GetByIdAsync(int id)
-            => await _context.Reservations.Include(r => r.Room).FirstOrDefaultAsync(r => r.Id == id);
+        public async Task<Reservation?> GetByIdAsync(int id)
+            => await _context.Reservations.Include(r => r.Room).Include(r => r.ReservedBy).FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<IEnumerable<Reservation>> GetByRoomIdAsync(int roomId)
             => await _context.Reservations.Where(r => r.RoomId == roomId).ToListAsync();
@@ -37,7 +37,7 @@ namespace MonolitoBackend.Infrastructure.Repositories
 
         public async Task DeleteAsync(int id)
         {
-            var reservation = await _context.Reservations.FindAsync(id);
+            var reservation = await GetByIdAsync(id);
             if (reservation != null)
             {
                 _context.Reservations.Remove(reservation);

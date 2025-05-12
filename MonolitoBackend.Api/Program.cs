@@ -9,51 +9,23 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MonolitoBackend.Core.Configuration;
 using System.Security.Claims;
+using MonolitoBackend.Infrastructure.Configurations;
+using MonolitoBackend.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Adicionando todos os serviços
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
-builder.Services.AddScoped<IRoomService, RoomService>();
-builder.Services.AddScoped<IReservationService, ReservationService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-
-// Configuração do JWT
-var jwtSettings = new JwtSettings
-{
-    Secret = builder.Configuration["JwtSettings:Secret"] ?? throw new InvalidOperationException("JWT Secret não configurado no appsettings.json"),
-    ExpirationInHours = builder.Configuration.GetValue<int>("JwtSettings:ExpirationInHours", 24)
-};
-
-if (string.IsNullOrWhiteSpace(jwtSettings.Secret))
-{
-    throw new InvalidOperationException("JWT Secret não pode estar vazio no appsettings.json");
-}
-
-builder.Services.AddSingleton(jwtSettings);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RoleClaimType = ClaimTypes.Role
-        };
-    });
+// Registro de serviços usando o Extension Method
+builder.Services.AddApplicationServices(builder.Configuration);
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
+
+// Adicionando logging
+builder.Logging.AddConsole();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -65,6 +37,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Middleware de tratamento de exceções
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 //app.UseHttpsRedirection();
 

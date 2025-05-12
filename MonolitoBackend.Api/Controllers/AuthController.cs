@@ -11,10 +11,12 @@ namespace MonolitoBackend.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IUserService _userService;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IUserService userService)
     {
         _authService = authService;
+        _userService = userService;
     }
 
     /// <summary>
@@ -35,9 +37,9 @@ public class AuthController : ControllerBase
     /// <response code="200">Retorna o token JWT e informações do usuário</response>
     /// <response code="401">Credenciais inválidas</response>
     [HttpPost("login")]
-    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto loginDto)
+    public async Task<ActionResult<AuthResponseDTO>> Login([FromBody] LoginDTO loginDto)
     {
         try
         {
@@ -70,9 +72,9 @@ public class AuthController : ControllerBase
     /// <response code="200">Retorna o token JWT e informações do usuário</response>
     /// <response code="400">Email já cadastrado ou dados inválidos</response>
     [HttpPost("register")]
-    [ProducesResponseType(typeof(AuthResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthResponseDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<AuthResponseDto>> Register([FromBody] UserRegistrationDto registrationDto)
+    public async Task<ActionResult<AuthResponseDTO>> Register([FromBody] RegisterDTO registerDto)
     {
         try
         {
@@ -86,7 +88,7 @@ public class AuthController : ControllerBase
                 });
             }
 
-            var response = await _authService.RegisterAsync(registrationDto);
+            var response = await _authService.RegisterAsync(registerDto);
             return Ok(response);
         }
         catch (InvalidOperationException ex)
@@ -115,7 +117,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
-        var users = await _authService.GetAllUsersAsync();
+        var users = await _userService.GetAllAsync();
         return Ok(users);
     }
 } 
