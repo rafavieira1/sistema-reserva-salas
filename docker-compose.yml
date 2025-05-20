@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reservas-api
+    ports:
+      - "5027:5027"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=salasdb;Username=usuario;Password=senha
+    depends_on:
+      - postgres
+
   postgres:
     image: postgres:latest
     container_name: reservas-postgres
@@ -11,9 +24,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
 volumes:
-  postgres-data:
+  postgres_data:
     name: postgres-salas-data
