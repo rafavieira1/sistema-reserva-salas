@@ -27,10 +27,18 @@ git clone https://github.com/seu-usuario/sistema-reserva-salas.git
 cd sistema-reserva-salas
 ```
 
-2. Inicie o PostgreSQL com Docker:
-```bash
-docker-compose up -d
-```
+2. Configure o banco de dados PostgreSQL:
+   - Se estiver usando Docker (recomendado):
+   ```bash
+   docker-compose up -d
+   ```
+   - Se estiver usando PostgreSQL localmente, atualize a string de conexão em `MonolitoBackend.Api/appsettings.json`
+
+3. Configure as variáveis de ambiente:
+   - Copie o arquivo `appsettings.json` para `appsettings.Development.json`
+   - Atualize as configurações conforme necessário:
+     - ConnectionStrings
+     - JwtSettings
 
 ## 🛠️ Instalação
 
@@ -105,6 +113,7 @@ POST /api/auth/login
 ```
 Authorization: Bearer {seu_token}
 ```
+
 ## 🧪 Testando a API
 
 Endpoints de teste disponíveis:
@@ -142,5 +151,37 @@ Os logs são gerados automaticamente para todas as exceções, incluindo:
 - Mensagem de erro
 - Stack trace
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+## 🔄 Migrações
 
+Para criar uma nova migração:
+```bash
+cd MonolitoBackend.Api
+dotnet ef migrations add NomeDaMigracao --project ../MonolitoBackend.Infrastructure
+```
+
+Para aplicar migrações:
+```bash
+dotnet ef database update
+```
+
+## 🐛 Solução de Problemas
+
+1. **Erro de conexão com o banco de dados**:
+   - Verifique se o PostgreSQL está rodando
+   - Confirme a string de conexão em `appsettings.json`
+   - Se usando Docker, verifique se o container está ativo
+
+2. **Erro de compilação**:
+   - Execute `dotnet clean`
+   - Delete as pastas `bin` e `obj`
+   - Execute `dotnet restore`
+   - Execute `dotnet build`
+
+3. **Erro de migração**:
+   - Verifique se o banco de dados existe
+   - Confirme as permissões do usuário
+   - Tente remover e recriar as migrações
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
