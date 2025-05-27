@@ -14,6 +14,18 @@ using MonolitoBackend.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 // Configuração do JWT
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
@@ -44,6 +56,9 @@ if (app.Environment.IsDevelopment())
 
 // Middleware de tratamento de exceções
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+// Habilitar CORS
+app.UseCors("AllowFrontend");
 
 //app.UseHttpsRedirection();
 
