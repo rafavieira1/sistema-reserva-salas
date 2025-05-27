@@ -14,6 +14,9 @@ using MonolitoBackend.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração do JWT
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
 // Registro de serviços usando o Extension Method
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -21,6 +24,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
 // Adicionando logging
